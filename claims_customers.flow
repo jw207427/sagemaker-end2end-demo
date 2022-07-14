@@ -6,7 +6,7 @@
   },
   "nodes": [
     {
-      "node_id": "e5d60d4f-6284-4a68-a788-39787909ebc9",
+      "node_id": "15102839-e687-4da4-aad1-7da7dbc1cc3b",
       "type": "SOURCE",
       "operator": "sagemaker.s3_source_0.1",
       "parameters": {
@@ -17,21 +17,19 @@
           "description": null,
           "s3ExecutionContext": {
             "__typename": "S3ExecutionContext",
-            "s3Uri": "s3://sagemaker-us-west-2-987720697751/att-fraud-demo/data/raw/claims.csv",
+            "s3Uri": "s3://sagemaker-us-east-1-420618410968/fraud-detection-demo/data/raw/claims.csv",
             "s3ContentType": "csv",
-            "s3HasHeader": true
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
           }
         }
       },
       "inputs": [],
       "outputs": [
         {
-          "name": "default",
-          "sampling": {
-            "sampling_method": "sample_by_ratio",
-            "sample_ratio": 1,
-            "seed": 123456789
-          }
+          "name": "default"
         }
       ]
     },
@@ -40,32 +38,11 @@
       "type": "TRANSFORM",
       "operator": "sagemaker.spark.infer_and_cast_type_0.1",
       "parameters": {},
-      "trained_parameters": {
-        "schema": {
-          "policy_id": "long",
-          "driver_relationship": "string",
-          "incident_type": "string",
-          "collision_type": "string",
-          "incident_severity": "string",
-          "authorities_contacted": "string",
-          "num_vehicles_involved": "long",
-          "num_injuries": "long",
-          "num_witnesses": "long",
-          "police_report_available": "string",
-          "injury_claim": "long",
-          "vehicle_claim": "long",
-          "total_claim_amount": "long",
-          "incident_month": "long",
-          "incident_day": "long",
-          "incident_dow": "long",
-          "incident_hour": "long",
-          "fraud": "long"
-        }
-      },
+      "trained_parameters": {},
       "inputs": [
         {
-          "name": "default",
-          "node_id": "e5d60d4f-6284-4a68-a788-39787909ebc9",
+          "name": "df",
+          "node_id": "15102839-e687-4da4-aad1-7da7dbc1cc3b",
           "output_name": "default"
         }
       ],
@@ -857,7 +834,7 @@
       ]
     },
     {
-      "node_id": "c884e0b5-9178-4353-8e2f-d77f459f7a62",
+      "node_id": "731c04e1-ade7-4d69-a9dd-ebfeb312b885",
       "type": "SOURCE",
       "operator": "sagemaker.s3_source_0.1",
       "parameters": {
@@ -868,7 +845,7 @@
           "description": null,
           "s3ExecutionContext": {
             "__typename": "S3ExecutionContext",
-            "s3Uri": "s3://sagemaker-us-west-2-987720697751/att-fraud-demo/data/raw/customers.csv",
+            "s3Uri": "s3://sagemaker-us-east-1-420618410968/fraud-detection-demo/data/raw/customers.csv",
             "s3ContentType": "csv",
             "s3HasHeader": true,
             "s3FieldDelimiter": ",",
@@ -880,11 +857,7 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "default",
-          "sampling": {
-            "sampling_method": "sample_by_limit",
-            "limit_rows": 50000
-          }
+          "name": "default"
         }
       ]
     },
@@ -893,27 +866,11 @@
       "type": "TRANSFORM",
       "operator": "sagemaker.spark.infer_and_cast_type_0.1",
       "parameters": {},
-      "trained_parameters": {
-        "schema": {
-          "policy_id": "long",
-          "customer_age": "long",
-          "months_as_customer": "long",
-          "num_claims_past_year": "long",
-          "num_insurers_past_5_years": "long",
-          "policy_state": "string",
-          "policy_deductable": "long",
-          "policy_annual_premium": "long",
-          "policy_liability": "string",
-          "customer_zip": "long",
-          "customer_gender": "string",
-          "customer_education": "string",
-          "auto_year": "long"
-        }
-      },
+      "trained_parameters": {},
       "inputs": [
         {
-          "name": "default",
-          "node_id": "c884e0b5-9178-4353-8e2f-d77f459f7a62",
+          "name": "df",
+          "node_id": "731c04e1-ade7-4d69-a9dd-ebfeb312b885",
           "output_name": "default"
         }
       ],
@@ -1513,81 +1470,6 @@
         {
           "name": "df",
           "node_id": "6c693c46-56e0-4ea9-be23-91a504ae5828",
-          "output_name": "default"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "default"
-        }
-      ]
-    },
-    {
-      "node_id": "b94aded1-cf16-4836-b46e-93f6133f3b0c",
-      "type": "DESTINATION",
-      "operator": "sagemaker.spark.featurestore_destination_0.1",
-      "name": "FeatureStore: att-demo-combined",
-      "parameters": {
-        "output_config": {
-          "feature_group_name": "att-demo-combined",
-          "offline_only": false,
-          "populate_event_time": true
-        }
-      },
-      "inputs": [
-        {
-          "name": "default",
-          "node_id": "6a054511-b581-461e-bb49-ed39d515e2a9",
-          "output_name": "default"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "default"
-        }
-      ]
-    },
-    {
-      "node_id": "8aa446f5-4a1b-4775-92fd-affa1c5785b7",
-      "type": "DESTINATION",
-      "operator": "sagemaker.spark.featurestore_destination_0.1",
-      "name": "FeatureStore: att-demo-customers",
-      "parameters": {
-        "output_config": {
-          "feature_group_name": "att-demo-customers",
-          "offline_only": false,
-          "populate_event_time": false
-        }
-      },
-      "inputs": [
-        {
-          "name": "default",
-          "node_id": "61a2952a-d9fb-4187-890c-c26ff49edc77",
-          "output_name": "default"
-        }
-      ],
-      "outputs": [
-        {
-          "name": "default"
-        }
-      ]
-    },
-    {
-      "node_id": "c01f814e-dc78-4805-bc11-e71a0cadbd8f",
-      "type": "DESTINATION",
-      "operator": "sagemaker.spark.featurestore_destination_0.1",
-      "name": "FeatureStore: att-demo-claims",
-      "parameters": {
-        "output_config": {
-          "feature_group_name": "att-demo-claims",
-          "offline_only": false,
-          "populate_event_time": false
-        }
-      },
-      "inputs": [
-        {
-          "name": "default",
-          "node_id": "62d710d9-a288-4004-b960-6cf452c0380c",
           "output_name": "default"
         }
       ],
@@ -70367,6 +70249,81 @@
         {
           "name": "df",
           "node_id": "1626aef2-cad0-4922-a496-34586d3def90",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "1307cd1a-8acb-4016-85dc-b97c22eab37e",
+      "type": "DESTINATION",
+      "operator": "sagemaker.spark.featurestore_destination_0.1",
+      "name": "FeatureStore: fraud-detection-combined",
+      "parameters": {
+        "output_config": {
+          "feature_group_name": "fraud-detection-combined",
+          "offline_only": false,
+          "populate_event_time": true
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "6a054511-b581-461e-bb49-ed39d515e2a9",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "4932fff6-9406-45e6-8b29-20cd7e0294cc",
+      "type": "DESTINATION",
+      "operator": "sagemaker.spark.featurestore_destination_0.1",
+      "name": "FeatureStore: fraud-detection-claims",
+      "parameters": {
+        "output_config": {
+          "feature_group_name": "fraud-detection-claims",
+          "offline_only": false,
+          "populate_event_time": false
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "62d710d9-a288-4004-b960-6cf452c0380c",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "c4a616f3-e40b-4c60-a937-6dd511af04c2",
+      "type": "DESTINATION",
+      "operator": "sagemaker.spark.featurestore_destination_0.1",
+      "name": "FeatureStore: fraud-detection-customers",
+      "parameters": {
+        "output_config": {
+          "feature_group_name": "fraud-detection-customers",
+          "offline_only": false,
+          "populate_event_time": false
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "61a2952a-d9fb-4187-890c-c26ff49edc77",
           "output_name": "default"
         }
       ],
